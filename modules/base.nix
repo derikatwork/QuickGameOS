@@ -35,6 +35,13 @@
   # Games and drivers are unfree; allow them.
   nixpkgs.config.allowUnfree = true;
 
+  # Several Electron apps we ship (Heroic, Vesktop, ...) can ride an Electron
+  # point-release that upstream has marked EOL/insecure. Allow the Electron
+  # runtime specifically, by name, so a routine version bump doesn't wedge the
+  # weekly rebuild.
+  nixpkgs.config.allowInsecurePredicate =
+    pkg: builtins.elem (lib.getName pkg) [ "electron" ];
+
   # Sensible, gaming-friendly defaults.
   time.timeZone = lib.mkDefault "America/New_York";
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";

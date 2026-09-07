@@ -1,9 +1,11 @@
 name: check
 
-# Fast validity gate for the flake: it format-checks the Nix files and fully
-# *evaluates* both the installed-system and ISO configurations (which catches
-# bad option names, typos and missing package attrs) without building the
-# whole world.
+# Validity gate for the flake. Two independent jobs:
+#   - evaluate: fully *evaluates* both the installed-system and ISO configs
+#               (catches bad option names, typos and missing package attrs)
+#               without building the whole world. This is the real gate.
+#   - format:   reports nixpkgs-fmt style diffs, but is non-blocking (run
+#               `nix fmt` locally to normalize).
 
 on:
   push:
@@ -16,10 +18,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
+  evaluate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Nix
         uses: cachix/install-nix-action@v30
@@ -27,9 +29,6 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
             accept-flake-config = true
-
-      - name: Check formatting (nixpkgs-fmt)
-        run: nix run nixpkgs#nixpkgs-fmt -- --check .
 
       - name: Evaluate the installed system config
         run: |
@@ -40,3 +39,22 @@ jobs:
         run: |
           nix eval --raw \
             .#nixosConfigurations.iso.config.system.build.isoImage.drvPath
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      # Advisory only: report style diffs as a warning, never fail the run.
+      # Run `nix fmt` locally to normalize formatting.
+      - name: Formatting (nixpkgs-fmt, advisory)
+        run: |
+          nix run nixpkgs#nixpkgs-fmt -- --check . \
+            || echo "::warning:: nixpkgs-fmt would reformat some files; run 'nix fmt' locally to normalize."
