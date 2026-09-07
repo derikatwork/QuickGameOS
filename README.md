@@ -25,7 +25,8 @@ weekly auto-updates.
 | **Gaming** | Steam (+ Proton-GE, gamescope "big picture" session, GameMode), Lutris, Heroic, Bottles, MangoHud + GOverlay, vkBasalt, ProtonUp-Qt, controller support (Xbox/PS/8BitDo). |
 | **Streaming** | OBS Studio with Wayland capture + AMD VAAPI encode + virtual camera; Sunshine host for remote play to Moonlight clients. |
 | **Audio** | PipeWire (low-latency, per-app routing), qpwgraph/Helvum patchbays, EasyEffects for mic cleanup. |
-| **Maintenance** | Weekly automatic updates + weekly garbage collection. |
+| **Extras** | Emulation (RetroArch + standalone emulators + ES-DE frontend), Vesktop (Wayland Discord), OpenRGB/Piper/Solaar peripheral tools, a Moonlight client, mpv + Spotify. All toggleable. |
+| **Maintenance** | Stable `nixos-25.05` channel, weekly automatic updates + weekly garbage collection. |
 
 ---
 
@@ -40,6 +41,7 @@ modules/
   audio.nix                    # PipeWire
   gaming.nix                   # Steam/Lutris/Heroic/Bottles + tooling
   streaming.nix                # OBS + virtual camera + Sunshine
+  extras.nix                   # emulation, comms, peripherals, media (toggleable)
   auto-update.nix              # weekly system.autoUpgrade
   users.nix                    # the primary user + home-manager wiring
   theme.nix                    # dark theme packages + console palette
@@ -54,6 +56,7 @@ home/
   gamer.nix                    # home-manager theme + dotfiles
   dotfiles/                    # labwc, waybar, wofi, foot, mako, MangoHud, wallpaper
 iso/default.nix                # live, bootable image
+.github/workflows/check.yml    # CI: format check + evaluate both configs
 ```
 
 ---
@@ -114,6 +117,13 @@ quickgameos = {
   gaming.enable    = true;
   streaming.enable = true;
 
+  # Extras (all default true; flip any off you don't want):
+  extras.enable        = true;
+  extras.emulation     = true;   # RetroArch + emulators + ES-DE
+  extras.communication = true;   # Vesktop (Discord)
+  extras.peripherals   = true;   # OpenRGB, Piper, Solaar, Moonlight client
+  extras.media         = true;   # mpv, Spotify
+
   autoUpdate = {
     enable = true;
     # Point this at YOUR fork/branch so the weekly rebuild tracks a config
@@ -151,9 +161,9 @@ Handy aliases (from `base.nix`): `qgos-update`, `qgos-upgrade`.
 
 ## Notes & tips
 
-- **Channel:** tracks `nixos-unstable` for a fresh gaming stack. To run stable,
-  change `inputs.nixpkgs.url` in `flake.nix` to `nixos-25.05` and point
-  home-manager at `release-25.05`.
+- **Channel:** tracks stable `nixos-25.05` for steadier weekly updates. For the
+  very newest gaming packages instead, change `inputs.nixpkgs.url` in `flake.nix`
+  to `nixos-unstable` and point home-manager at its default branch.
 - **flake.lock:** not committed here; it's created on your first build. Commit it
   afterwards for fully reproducible weekly updates.
 - **Streaming to Moonlight:** after boot, open <https://localhost:47990> to pair

@@ -47,6 +47,38 @@ with lib;
       description = "Install and configure the streaming stack (OBS Studio + plugins, virtual camera, Sunshine host).";
     };
 
+    extras = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Master switch for the QuickGameOS extras (emulation, communication, peripherals, media). Turn individual categories off below.";
+      };
+
+      emulation = mkOption {
+        type = types.bool;
+        default = true;
+        description = "RetroArch + standalone emulators and an ES-DE frontend (an EmuDeck-style retro setup).";
+      };
+
+      communication = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Chat/voice apps that streamers live in (Vesktop - a Wayland-friendly Discord).";
+      };
+
+      peripherals = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Gaming peripheral tools: OpenRGB lighting, gaming-mouse config (Piper), Logitech (Solaar), controller remapping, and a Moonlight client.";
+      };
+
+      media = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Media apps handy on a gaming/streaming box (mpv, Spotify).";
+      };
+    };
+
     autoUpdate = {
       enable = mkOption {
         type = types.bool;

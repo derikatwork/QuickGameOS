@@ -2,14 +2,14 @@
   description = "QuickGameOS - a Nix-powered, BunsenLabs-inspired, gaming-first Wayland OS (Steam, Lutris, Heroic, Bottles, OBS + Sunshine, weekly auto-updates)";
 
   inputs = {
-    # Gaming benefits from a fresh package set, so we track unstable by default.
-    # To run the more conservative stable channel instead, change this to
-    # "github:NixOS/nixpkgs/nixos-25.05" and point home-manager at its
-    # matching "release-25.05" branch below.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Track the current NixOS stable release for steadier weekly auto-updates.
+    # (For the very newest gaming packages instead, switch this to
+    # "github:NixOS/nixpkgs/nixos-unstable" and home-manager to its default
+    # branch below.)
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -27,6 +27,7 @@
         ./modules/audio.nix
         ./modules/gaming.nix
         ./modules/streaming.nix
+        ./modules/extras.nix
         ./modules/desktop
         ./modules/theme.nix
 
