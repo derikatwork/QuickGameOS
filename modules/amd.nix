@@ -14,9 +14,10 @@
   # pkgs.linuxPackages_latest if you prefer mainline.
   boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_zen;
 
-  # Expose the full power/fan/clock control surface so CoreCtrl can tune
-  # the GPU (undervolt, fan curves, power profiles).
-  boot.kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
+  # Expose the full power/fan/clock control surface so CoreCtrl can tune the
+  # GPU (undervolt, fan curves, power profiles). This sets the
+  # amdgpu.ppfeaturemask kernel param for us.
+  hardware.amdgpu.overdrive.enable = true;
 
   # Mesa provides RADV (Vulkan) plus VA-API and VDPAU for radeonsi out of
   # the box, and enable32Bit pulls in the 32-bit Mesa userspace Steam/Proton
@@ -35,10 +36,7 @@
   };
 
   # CoreCtrl for AMD GPU/CPU tuning from a GUI.
-  programs.corectrl = {
-    enable = true;
-    gpuOverclock.enable = true;
-  };
+  programs.corectrl.enable = true;
 
   environment.systemPackages = with pkgs; [
     # Handy AMD/Vulkan diagnostics.

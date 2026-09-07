@@ -16,8 +16,7 @@ in
     # ---- Emulation: an EmuDeck-style retro setup ------------------------
     (lib.mkIf (on cfg.extras.emulation) {
       environment.systemPackages = with pkgs; [
-        retroarchFull        # RetroArch with the full set of libretro cores
-        es-de                # EmulationStation Desktop Edition - the frontend
+        retroarchFull        # RetroArch with the full set of libretro cores (unified frontend)
 
         # Standalone emulators for the systems that want them:
         dolphin-emu          # GameCube / Wii
