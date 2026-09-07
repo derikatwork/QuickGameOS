@@ -52,6 +52,12 @@
 
   # Broadly-compatible kernel for booting on varied hardware.
   boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+
+  # The installer media enables ZFS by default, but ZFS lags brand-new
+  # kernels (and we ship a very new one here), so drop it from the live
+  # image - the installed system can still opt into ZFS with an older kernel.
+  boot.supportedFilesystems.zfs = lib.mkForce false;
+
   networking.hostName = lib.mkForce "quickgameos-live";
 
   # A desktop shortcut + docs pointing at the installer.
