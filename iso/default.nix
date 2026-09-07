@@ -58,6 +58,11 @@
   # image - the installed system can still opt into ZFS with an older kernel.
   boot.supportedFilesystems.zfs = lib.mkForce false;
 
+  # The installer media turns on wpa_supplicant (networking.wireless), but our
+  # base enables NetworkManager and the two can't coexist. Force wireless off
+  # and let NetworkManager handle Wi-Fi on the live image too.
+  networking.wireless.enable = lib.mkForce false;
+
   networking.hostName = lib.mkForce "quickgameos-live";
 
   # A desktop shortcut + docs pointing at the installer.
