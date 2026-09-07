@@ -1,0 +1,78 @@
+name: build-iso
+
+# Builds the downloadable QuickGameOS ISO on GitHub's runners and publishes it.
+#
+#   - Run it manually:  Actions -> build-iso -> "Run workflow"
+#       => download the .iso + config bundle from the run's Artifacts.
+#   - Push a tag  vX.Y.Z  => also attaches them to a GitHub Release.
+#
+# The image built here is the LEAN installer/live ISO (.#iso); the full
+# gaming/streaming/emulation stack installs to disk from the embedded flake.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write   # needed to create the Release on tag builds
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # A NixOS ISO build needs room; reclaim the space the runner wastes on
+      # preinstalled toolchains we don't use.
+      - name: Free up disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Build the ISO
+        run: nix build .#iso --print-build-logs
+
+      - name: Collect artifacts
+        id: collect
+        run: |
+          mkdir -p out
+          iso="$(find -L result/iso -name '*.iso' | head -n1)"
+          cp "$iso" out/
+          ( cd out && sha256sum *.iso > SHA256SUMS.txt )
+          # A clean bundle of just the tracked config files.
+          git archive --format=tar.gz -o out/quickgameos-config.tar.gz HEAD
+          echo "iso_name=$(basename "$iso")" >> "$GITHUB_OUTPUT"
+          ls -lh out
+
+      - name: Upload build artifacts (downloadable from this run)
+        uses: actions/upload-artifact@v4
+        with:
+          name: quickgameos-iso
+          path: out/*
+          if-no-files-found: error
+          # ISOs are already compressed; don't waste time re-zipping.
+          compression-level: 0
+
+      - name: Attach to Release (tag builds only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/*.iso
+            out/SHA256SUMS.txt
+            out/quickgameos-config.tar.gz
+          generate_release_notes: true

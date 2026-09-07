@@ -55,25 +55,41 @@ hosts/quickgameos/
 home/
   gamer.nix                    # home-manager theme + dotfiles
   dotfiles/                    # labwc, waybar, wofi, foot, mako, MangoHud, wallpaper
-iso/default.nix                # live, bootable image
+iso/default.nix                # lean live/installer image (embeds the flake)
 .github/workflows/check.yml    # CI: format check + evaluate both configs
+.github/workflows/build-iso.yml# CI: build the downloadable ISO + config bundle
 ```
 
 ---
 
 ## Quick start
 
-### Option A — build a live ISO and try it
+### Option A — get the downloadable ISO
+
+The ISO is a **lean installer/live image**: it boots a themed labwc live
+session with the installer and the whole QuickGameOS flake embedded, and you
+install the *full* stack (Steam, Plasma, emulators, streaming, …) to disk from
+it. Keeping it lean is what lets it build on CI and stay a reasonable download.
+
+**Download a prebuilt ISO (no Nix needed):**
+
+- Go to the repo's **Actions → build-iso**, run the workflow (or open the latest
+  run), and download the **`quickgameos-iso`** artifact — it contains the `.iso`,
+  a `SHA256SUMS.txt`, and a `quickgameos-config.tar.gz` config bundle.
+- Or, for tagged releases (`git tag v0.1.0 && git push --tags`), the same files
+  are attached to the **GitHub Release**.
+
+**Or build it yourself (needs Nix):**
 
 ```bash
 nix build .#iso
 # image lands in ./result/iso/quickgameos-*.iso
 ```
 
-Write it to a USB stick (e.g. with `sudo dd if=result/iso/quickgameos-*.iso
-of=/dev/sdX bs=4M status=progress oflag=sync`, or the KDE `isoimagewriter`
-included in the image) and boot it. It auto-logs into the desktop; log out to
-switch between labwc, Plasma and the Steam session.
+Write it to a USB stick (`sudo dd if=quickgameos-*.iso of=/dev/sdX bs=4M
+status=progress oflag=sync`, or Ventoy/balenaEtcher) and boot it. It auto-logs
+into the labwc live desktop; follow `/etc/quickgameos-install/INSTALL.txt` to
+install QuickGameOS to your drive.
 
 ### Option B — install to disk from the flake
 
