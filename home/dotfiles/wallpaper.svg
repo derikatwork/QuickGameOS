@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#242938"/>
+      <stop offset="55%" stop-color="#1a1b26"/>
+      <stop offset="100%" stop-color="#12131c"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#88c0d0"/>
+      <stop offset="100%" stop-color="#5e81ac"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- subtle grid -->
+  <g stroke="#2e3440" stroke-width="1" opacity="0.35">
+    <path d="M0 270 H1920 M0 540 H1920 M0 810 H1920"/>
+    <path d="M480 0 V1080 M960 0 V1080 M1440 0 V1080"/>
+  </g>
+
+  <!-- mark -->
+  <g transform="translate(960 470)" text-anchor="middle" font-family="JetBrains Mono, monospace">
+    <text y="0" font-size="120" font-weight="700" fill="#eceff4" letter-spacing="2">Quick<tspan fill="url(#accent)">Game</tspan>OS</text>
+    <text y="70" font-size="34" fill="#81a1c1" letter-spacing="10">GAME FIRST  ·  NIX POWERED  ·  WAYLAND</text>
+  </g>
+
+  <!-- prompt accent -->
+  <g transform="translate(960 640)" text-anchor="middle" font-family="JetBrains Mono, monospace">
+    <text font-size="26" fill="#a3be8c">~ $ steam -gamepadui</text>
+  </g>
+</svg>

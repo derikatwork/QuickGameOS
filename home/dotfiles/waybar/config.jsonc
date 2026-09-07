@@ -1,0 +1,80 @@
+// QuickGameOS waybar - a thin, dark BunsenLabs-style panel for labwc.
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "spacing": 6,
+  "modules-left": ["custom/menu", "wlr/taskbar"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "temperature",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "tray"
+  ],
+
+  "custom/menu": {
+    "format": "  QuickGameOS",
+    "tooltip": false,
+    "on-click": "wofi --show drun"
+  },
+
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 18,
+    "on-click": "activate",
+    "on-click-middle": "close"
+  },
+
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+
+  "cpu": {
+    "format": "  {usage}%",
+    "interval": 2,
+    "on-click": "foot -e btop"
+  },
+
+  "memory": {
+    "format": "  {percentage}%",
+    "interval": 2
+  },
+
+  "temperature": {
+    "format": " {temperatureC}°C",
+    "critical-threshold": 85,
+    "format-critical": " {temperatureC}°C"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "  muted",
+    "format-icons": { "default": ["", "", ""] },
+    "on-click": "pavucontrol",
+    "scroll-step": 5
+  },
+
+  "network": {
+    "format-wifi": "  {essid}",
+    "format-ethernet": "  wired",
+    "format-disconnected": "  offline",
+    "tooltip-format": "{ifname}: {ipaddr}",
+    "on-click": "foot -e nmtui"
+  },
+
+  "bluetooth": {
+    "format": " ",
+    "format-connected": " {num_connections}",
+    "on-click": "blueman-manager"
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 8
+  }
+}

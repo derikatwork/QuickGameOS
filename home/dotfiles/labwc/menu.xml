@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- QuickGameOS right-click root menu, BunsenLabs style. -->
+<openbox_menu>
+  <menu id="root-menu" label="QuickGameOS">
+    <separator label="QuickGameOS" />
+
+    <menu id="games-menu" label="Play">
+      <item label="Steam (Big Picture)"><action name="Execute"><command>steam -gamepadui</command></action></item>
+      <item label="Steam (Desktop)"><action name="Execute"><command>steam</command></action></item>
+      <item label="Lutris"><action name="Execute"><command>lutris</command></action></item>
+      <item label="Heroic Games Launcher"><action name="Execute"><command>heroic</command></action></item>
+      <item label="Bottles"><action name="Execute"><command>bottles</command></action></item>
+    </menu>
+
+    <menu id="stream-menu" label="Stream &amp; Record">
+      <item label="OBS Studio"><action name="Execute"><command>obs</command></action></item>
+      <item label="Sunshine (host settings)"><action name="Execute"><command>xdg-open https://localhost:47990</command></action></item>
+      <item label="Audio Mixer"><action name="Execute"><command>pavucontrol</command></action></item>
+      <item label="Audio Patchbay"><action name="Execute"><command>qpwgraph</command></action></item>
+    </menu>
+
+    <menu id="apps-menu" label="Applications">
+      <item label="Terminal"><action name="Execute"><command>foot</command></action></item>
+      <item label="Web Browser"><action name="Execute"><command>firefox</command></action></item>
+      <item label="File Manager"><action name="Execute"><command>pcmanfm</command></action></item>
+      <item label="Text Editor"><action name="Execute"><command>micro</command></action></item>
+      <item label="App Launcher"><action name="Execute"><command>wofi --show drun</command></action></item>
+    </menu>
+
+    <menu id="tune-menu" label="Tune">
+      <item label="CoreCtrl (GPU/CPU)"><action name="Execute"><command>corectrl</command></action></item>
+      <item label="GOverlay (MangoHud)"><action name="Execute"><command>goverlay</command></action></item>
+      <item label="ProtonUp-Qt"><action name="Execute"><command>protonup-qt</command></action></item>
+      <item label="Appearance"><action name="Execute"><command>lxappearance</command></action></item>
+    </menu>
+
+    <separator />
+    <item label="Lock Screen"><action name="Execute"><command>swaylock</command></action></item>
+    <item label="Reconfigure labwc"><action name="Reconfigure" /></item>
+    <item label="Exit (log out)"><action name="Exit" /></item>
+  </menu>
+</openbox_menu>
