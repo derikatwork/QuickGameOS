@@ -65,11 +65,15 @@
         modules = commonModules ++ [ ./iso ];
       };
 
-      # Convenience alias so `nix build .#iso` works.
-      packages.${system}.iso =
-        self.nixosConfigurations.iso.config.system.build.isoImage;
-
-      packages.${system}.default = self.packages.${system}.iso;
+      # Convenience so `nix build .#iso` (and `.#default`) works.
+      packages.${system} =
+        let
+          isoImage = self.nixosConfigurations.iso.config.system.build.isoImage;
+        in
+        {
+          iso = isoImage;
+          default = isoImage;
+        };
 
       # `nix fmt`
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;

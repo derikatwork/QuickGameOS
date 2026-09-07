@@ -42,8 +42,6 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    # Style feedback only - never blocks the merge.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -54,5 +52,9 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      - name: Check formatting (nixpkgs-fmt)
-        run: nix run nixpkgs#nixpkgs-fmt -- --check .
+      # Advisory only: report style diffs as a warning, never fail the run.
+      # Run `nix fmt` locally to normalize formatting.
+      - name: Formatting (nixpkgs-fmt, advisory)
+        run: |
+          nix run nixpkgs#nixpkgs-fmt -- --check . \
+            || echo "::warning:: nixpkgs-fmt would reformat some files; run 'nix fmt' locally to normalize."
