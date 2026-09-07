@@ -1,0 +1,28 @@
+#!/bin/sh
+# QuickGameOS labwc autostart - launched once when the labwc session starts.
+
+# Wallpaper (solid dark base + branded SVG if the renderer supports it).
+swaybg --color '#1a1b26' >/dev/null 2>&1 &
+
+# Panel / status bar.
+waybar >/dev/null 2>&1 &
+
+# Notification daemon.
+mako >/dev/null 2>&1 &
+
+# Tray helpers: network + bluetooth.
+nm-applet --indicator >/dev/null 2>&1 &
+blueman-applet >/dev/null 2>&1 &
+
+# Polkit authentication agent (needed by CoreCtrl, mounting, etc.).
+lxqt-policykit-agent >/dev/null 2>&1 &
+
+# Display hotplug / multi-monitor profiles.
+kanshi >/dev/null 2>&1 &
+
+# Idle: dim + lock after inactivity (commented out by default so it never
+# interrupts a long play/stream session; uncomment if you want it).
+# swayidle -w \
+#   timeout 900 'swaylock -f' \
+#   timeout 1200 'wlopm --off \*' resume 'wlopm --on \*' \
+#   before-sleep 'swaylock -f' >/dev/null 2>&1 &

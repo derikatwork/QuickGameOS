@@ -1,0 +1,42 @@
+name: check
+
+# Fast validity gate for the flake: it format-checks the Nix files and fully
+# *evaluates* both the installed-system and ISO configurations (which catches
+# bad option names, typos and missing package attrs) without building the
+# whole world.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Check formatting (nixpkgs-fmt)
+        run: nix run nixpkgs#nixpkgs-fmt -- --check .
+
+      - name: Evaluate the installed system config
+        run: |
+          nix eval --raw \
+            .#nixosConfigurations.quickgameos.config.system.build.toplevel.drvPath
+
+      - name: Evaluate the live ISO config
+        run: |
+          nix eval --raw \
+            .#nixosConfigurations.iso.config.system.build.isoImage.drvPath

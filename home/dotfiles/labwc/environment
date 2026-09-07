@@ -1,0 +1,20 @@
+# QuickGameOS labwc environment - KEY=VALUE pairs sourced by the session.
+
+# Cursor
+XCURSOR_THEME=Bibata-Modern-Classic
+XCURSOR_SIZE=24
+
+# Make toolkits go Wayland-native where possible.
+QT_QPA_PLATFORM=wayland;xcb
+QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+GDK_BACKEND=wayland,x11
+SDL_VIDEODRIVER=wayland
+CLUTTER_BACKEND=wayland
+MOZ_ENABLE_WAYLAND=1
+
+# Java apps behave better with this on wlroots compositors.
+_JAVA_AWT_WM_NONREPARENTING=1
+
+# Tell apps this is a wlroots-based session.
+XDG_CURRENT_DESKTOP=labwc
+XDG_SESSION_TYPE=wayland

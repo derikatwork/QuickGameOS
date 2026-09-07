@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!--
+  QuickGameOS labwc configuration.
+  labwc is an Openbox-inspired Wayland compositor; this file mirrors the
+  keyboard/mouse-driven, right-click-menu feel of classic BunsenLabs.
+-->
+<labwc_config>
+  <core>
+    <gap>4</gap>
+    <adaptiveSync>yes</adaptiveSync>
+    <reuseOutputMode>yes</reuseOutputMode>
+  </core>
+
+  <theme>
+    <!-- Empty name = built-in dark theme; tweak with the settings below. -->
+    <name></name>
+    <cornerRadius>6</cornerRadius>
+    <font place="ActiveWindow">
+      <name>JetBrainsMono Nerd Font</name>
+      <size>10</size>
+    </font>
+    <titlebar>
+      <layout>icon:iconify,max,close</layout>
+    </titlebar>
+  </theme>
+
+  <placement>
+    <policy>cascade</policy>
+  </placement>
+
+  <focus>
+    <followMouse>no</followMouse>
+    <raiseOnFocus>no</raiseOnFocus>
+  </focus>
+
+  <desktops>
+    <number>4</number>
+  </desktops>
+
+  <keyboard>
+    <default />
+
+    <!-- Launch essentials -->
+    <keybind key="W-Return"><action name="Execute"><command>foot</command></action></keybind>
+    <keybind key="W-d"><action name="Execute"><command>wofi --show drun</command></action></keybind>
+    <keybind key="W-e"><action name="Execute"><command>pcmanfm</command></action></keybind>
+    <keybind key="W-w"><action name="Execute"><command>firefox</command></action></keybind>
+    <keybind key="W-s"><action name="Execute"><command>steam -gamepadui</command></action></keybind>
+
+    <!-- Window management -->
+    <keybind key="A-F4"><action name="Close" /></keybind>
+    <keybind key="W-f"><action name="ToggleFullscreen" /></keybind>
+    <keybind key="W-m"><action name="ToggleMaximize" /></keybind>
+    <keybind key="W-Left"><action name="SnapToEdge"><direction>left</direction></action></keybind>
+    <keybind key="W-Right"><action name="SnapToEdge"><direction>right</direction></action></keybind>
+    <keybind key="W-Up"><action name="SnapToEdge"><direction>up</direction></action></keybind>
+    <keybind key="W-Down"><action name="SnapToEdge"><direction>down</direction></action></keybind>
+    <keybind key="A-Tab"><action name="NextWindow" /></keybind>
+
+    <!-- Virtual desktops -->
+    <keybind key="W-1"><action name="GoToDesktop"><to>1</to></action></keybind>
+    <keybind key="W-2"><action name="GoToDesktop"><to>2</to></action></keybind>
+    <keybind key="W-3"><action name="GoToDesktop"><to>3</to></action></keybind>
+    <keybind key="W-4"><action name="GoToDesktop"><to>4</to></action></keybind>
+
+    <!-- Screenshots -->
+    <keybind key="Print"><action name="Execute"><command>sh -c 'grim - | swappy -f -'</command></action></keybind>
+    <keybind key="S-Print"><action name="Execute"><command>sh -c 'grim -g "$(slurp)" - | swappy -f -'</command></action></keybind>
+
+    <!-- Lock / logout -->
+    <keybind key="W-l"><action name="Execute"><command>swaylock</command></action></keybind>
+    <keybind key="W-S-e"><action name="Exit" /></keybind>
+
+    <!-- Media & brightness keys -->
+    <keybind key="XF86AudioRaiseVolume"><action name="Execute"><command>wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+</command></action></keybind>
+    <keybind key="XF86AudioLowerVolume"><action name="Execute"><command>wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-</command></action></keybind>
+    <keybind key="XF86AudioMute"><action name="Execute"><command>wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle</command></action></keybind>
+    <keybind key="XF86MonBrightnessUp"><action name="Execute"><command>brightnessctl set 5%+</command></action></keybind>
+    <keybind key="XF86MonBrightnessDown"><action name="Execute"><command>brightnessctl set 5%-</command></action></keybind>
+    <keybind key="XF86AudioPlay"><action name="Execute"><command>playerctl play-pause</command></action></keybind>
+  </keyboard>
+
+  <mouse>
+    <!-- Right-click the desktop for the BunsenLabs-style root menu -->
+    <context name="Root">
+      <mousebind button="Right" action="Press"><action name="ShowMenu"><menu>root-menu</menu></action></mousebind>
+      <mousebind button="Middle" action="Press"><action name="ShowMenu"><menu>client-menu</menu></action></mousebind>
+    </context>
+    <context name="Frame">
+      <mousebind button="W-Left" action="Press"><action name="Move" /></mousebind>
+      <mousebind button="W-Right" action="Press"><action name="Resize" /></mousebind>
+    </context>
+    <context name="TitleBar">
+      <mousebind button="Left" action="Drag"><action name="Move" /></mousebind>
+      <mousebind button="Left" action="DoubleClick"><action name="ToggleMaximize" /></mousebind>
+    </context>
+  </mouse>
+
+  <libinput>
+    <device category="touchpad">
+      <naturalScroll>yes</naturalScroll>
+      <tap>yes</tap>
+    </device>
+  </libinput>
+</labwc_config>

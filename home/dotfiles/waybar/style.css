@@ -1,0 +1,53 @@
+/* QuickGameOS waybar theme - dark, flat, Nord-ish. */
+* {
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-size: 13px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(26, 27, 38, 0.92);
+  color: #d8dee9;
+  border-bottom: 2px solid #3b4252;
+}
+
+#custom-menu {
+  color: #88c0d0;
+  font-weight: bold;
+  padding: 0 12px;
+}
+
+#clock {
+  color: #eceff4;
+  font-weight: bold;
+}
+
+#cpu, #memory, #temperature, #pulseaudio,
+#network, #bluetooth, #tray, #taskbar {
+  padding: 0 10px;
+  color: #d8dee9;
+}
+
+#temperature.critical {
+  color: #bf616a;
+}
+
+#network.disconnected {
+  color: #bf616a;
+}
+
+#taskbar button {
+  padding: 0 6px;
+  background: transparent;
+  border-radius: 4px;
+}
+
+#taskbar button.active {
+  background: #3b4252;
+}
+
+tooltip {
+  background: #2e3440;
+  border: 1px solid #4c566a;
+  color: #eceff4;
+}
