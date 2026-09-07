@@ -25,9 +25,12 @@ in
     # Preselect a sensible session at the greeter. We use the always-valid
     # desktop session names here (labwc / plasma); the Steam "big picture"
     # gamescope session is still one click away in the session menu.
-    services.displayManager.defaultSession = lib.mkDefault (
-      if wantLabwc then "labwc" else "plasma"
-    );
+    #
+    # Plain assignment (priority 100) intentionally overrides Plasma 6's own
+    # mkDefault "plasma", so with desktop = "both" labwc is the default and
+    # Plasma stays one click away. A host can still change it with mkForce.
+    services.displayManager.defaultSession =
+      if wantLabwc then "labwc" else "plasma";
 
     # -------------------------------------------------------------------
     # xdg desktop portals - required for screen sharing/capture (OBS,
