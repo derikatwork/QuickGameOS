@@ -63,6 +63,11 @@
 
   networking.hostName = lib.mkForce "quickgameos-live";
 
+  # Both our base.nix and the installer base set system.stateVersion at
+  # mkDefault with different values; force one to settle the conflict (the
+  # value is irrelevant on an ephemeral live image).
+  system.stateVersion = lib.mkForce "25.11";
+
   # A desktop shortcut + docs pointing at the installer.
   environment.systemPackages = [ pkgs.gparted ];
 
