@@ -37,7 +37,6 @@
   boot.plymouth.enable = true;
   boot.kernelParams = [ "quiet" "splash" ];
   boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
 
   # Passwordless sudo for the wheel group is convenient on a personal
   # gaming box; drop this if you'd rather be prompted.

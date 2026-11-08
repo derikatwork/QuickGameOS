@@ -41,9 +41,9 @@ in
     hardware.xone.enable = true;
     services.joycond.enable = true;
 
-    # Higher esync/proton file-descriptor + memory-map limits so big games
-    # (and Easy Anti-Cheat titles) don't hit the ceiling.
-    systemd.extraConfig = "DefaultLimitNOFILE=1048576";
+    # Higher file-descriptor + memory-map limits so big games (and Easy
+    # Anti-Cheat titles) don't hit the ceiling.
+    systemd.settings.Manager.DefaultLimitNOFILE = 1048576;
     security.pam.loginLimits = [
       { domain = "*"; type = "soft"; item = "nofile"; value = "1048576"; }
       { domain = "*"; type = "hard"; item = "nofile"; value = "1048576"; }
