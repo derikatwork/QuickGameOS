@@ -43,7 +43,29 @@ kernel**, the way Fedora ships the newest stable kernel and amdgpu.
 
 You go from a bare machine to the complete setup in a few steps.
 
-### 1. Install stock NixOS (minimal)
+### Quick install (script)
+
+Already on NixOS and just want it done? From a clone of this repo:
+
+```bash
+nix-shell -p git
+git clone https://github.com/derikatwork/quickgameos
+cd quickgameos
+./install.sh                         # keep defaults
+# or personalize:
+./install.sh --username alice --hostname rig --timezone America/Los_Angeles
+```
+
+`install.sh` regenerates this machine's `hardware-configuration.nix`, applies any
+`--username` / `--hostname` / `--timezone` you pass, and runs
+`nixos-rebuild switch --flake .#quickgameos`. Useful flags: `--dry-run` (preview
+without changing anything), `--keep-hardware` / `--regen-hardware`, `-y` (no
+prompt), `--help`. It does **not** partition disks or install a bootloader — you
+already have NixOS. Prefer doing it by hand? Follow the manual steps below.
+
+### Manual steps
+
+#### 1. Install stock NixOS (minimal)
 
 Grab the official **minimal ISO** from <https://nixos.org/download> (any recent
 NixOS installer works), boot it, and do a normal install — partition, mount,
@@ -51,7 +73,7 @@ NixOS installer works), boot it, and do a normal install — partition, mount,
 QuickGameOS-specific yet; this is just vanilla NixOS. (Already running NixOS?
 Skip to step 2.)
 
-### 2. Get the flake
+#### 2. Get the flake
 
 ```bash
 nix-shell -p git        # if git isn't installed yet
@@ -59,7 +81,7 @@ git clone https://github.com/derikatwork/quickgameos
 cd quickgameos
 ```
 
-### 3. Drop in this machine's hardware config
+#### 3. Drop in this machine's hardware config
 
 The checked-in `hosts/quickgameos/hardware-configuration.nix` is a **non-booting
 template** — replace it with the one generated for *your* hardware:
@@ -69,13 +91,13 @@ sudo nixos-generate-config --show-hardware-config \
   > hosts/quickgameos/hardware-configuration.nix
 ```
 
-### 4. Make it yours (optional)
+#### 4. Make it yours (optional)
 
 Edit `hosts/quickgameos/default.nix`: set your `quickgameos.username`,
 timezone, and flip any `quickgameos.*` toggles you don't want (see
 **Configuration knobs** below).
 
-### 5. Switch to QuickGameOS
+#### 5. Switch to QuickGameOS
 
 ```bash
 sudo nixos-rebuild switch --flake .#quickgameos
@@ -85,7 +107,7 @@ This pulls in COSMIC, the gaming + streaming stacks, AMD tuning, Flatpak/Flathub
 and the weekly auto-update timer — all at once. First build downloads a lot; grab
 a coffee.
 
-### 6. Reboot & finish
+#### 6. Reboot & finish
 
 Reboot into the COSMIC greeter, log in as your user (default **`gamer`** /
 **`gamer`** if you kept the defaults), then:
@@ -98,7 +120,7 @@ flatpak install flathub com.valvesoftware.Steam   # (optional) Flatpak editions
 That's it — you're on the complete QuickGameOS setup. From here it keeps itself
 updated weekly.
 
-### Ongoing
+#### Ongoing
 
 - **Update now:** `qgos-upgrade` (alias for `nixos-rebuild switch --flake … --upgrade`).
 - **Weekly auto-updates** run on their own; set `quickgameos.autoUpdate.flake`
@@ -140,6 +162,7 @@ quickgameos = {
 
 ```
 flake.nix                      # entry point: the `quickgameos` system
+install.sh                     # minimal NixOS -> full QuickGameOS installer
 modules/
   options.nix                  # the quickgameos.* configuration knobs
   base.nix                     # Nix, GC, fonts, networking, CLI tools, codecs
