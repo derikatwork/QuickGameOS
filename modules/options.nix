@@ -27,7 +27,7 @@ with lib;
       description = ''
         The desktop environment. QuickGameOS ships System76's COSMIC - a
         fast, modern, Wayland-native desktop. (Only "cosmic" for now; the
-        option is kept so hosts/ISO can be explicit and future desktops can
+        option is kept so a host can be explicit and future desktops can
         slot in.)
       '';
     };

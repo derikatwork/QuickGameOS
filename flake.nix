@@ -1,5 +1,5 @@
 {
-  description = "QuickGameOS - a Nix-powered, gaming-first OS with the COSMIC desktop, tracking Fedora-level freshness (latest stable kernel + current software), Steam/Lutris/Heroic/Bottles + Flatpak, OBS + Sunshine, weekly auto-updates";
+  description = "QuickGameOS - a Nix-powered, gaming-first NixOS config with the COSMIC desktop, tracking Fedora-level freshness (latest stable kernel + current software), Steam/Lutris/Heroic/Bottles + Flatpak, OBS + Sunshine, weekly auto-updates";
 
   inputs = {
     # Track nixos-unstable: it's the NixOS channel closest to Fedora's
@@ -14,52 +14,32 @@
     { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-
-      # Modules shared by both the installable system and the live ISO.
-      commonModules = [
-        ./modules/options.nix
-        ./modules/base.nix
-        ./modules/amd.nix
-        ./modules/audio.nix
-        ./modules/gaming.nix
-        ./modules/flatpak.nix
-        ./modules/streaming.nix
-        ./modules/extras.nix
-        ./modules/desktop
-      ];
     in
     {
       # ---------------------------------------------------------------------
-      # The installed system:
+      # The QuickGameOS system. Apply to a minimal NixOS install (or any
+      # existing NixOS) with:
       #   sudo nixos-rebuild switch --flake .#quickgameos
       # Replace hosts/quickgameos/hardware-configuration.nix with the output
-      # of `nixos-generate-config` for your machine first.
+      # of `nixos-generate-config` for your machine first. See the README's
+      # "From minimal NixOS to full QuickGameOS" guide.
       # ---------------------------------------------------------------------
       nixosConfigurations.quickgameos = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
-        modules = commonModules ++ [
+        modules = [
+          ./modules/options.nix
+          ./modules/base.nix
+          ./modules/amd.nix
+          ./modules/audio.nix
+          ./modules/gaming.nix
+          ./modules/flatpak.nix
+          ./modules/streaming.nix
+          ./modules/extras.nix
+          ./modules/desktop
           ./modules/auto-update.nix
           ./hosts/quickgameos
         ];
       };
-
-      # ---------------------------------------------------------------------
-      # A live, bootable COSMIC installer image:  nix build .#iso
-      # The image lands in ./result/iso/*.iso
-      # ---------------------------------------------------------------------
-      nixosConfigurations.iso = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = commonModules ++ [ ./iso ];
-      };
-
-      packages.${system} =
-        let
-          isoImage = self.nixosConfigurations.iso.config.system.build.isoImage;
-        in
-        {
-          iso = isoImage;
-          default = isoImage;
-        };
 
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
     };
