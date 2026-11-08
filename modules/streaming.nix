@@ -4,9 +4,10 @@ let
   cfg = config.quickgameos;
 
   # OBS Studio wrapped with the plugins a Wayland streamer actually needs.
+  # Screen capture on COSMIC uses OBS's built-in PipeWire source via the
+  # xdg-desktop-portal-cosmic ScreenCast portal - no wlroots plugin needed.
   obs = pkgs.wrapOBS {
     plugins = with pkgs.obs-studio-plugins; [
-      wlrobs                       # wlroots screen capture (labwc)
       obs-pipewire-audio-capture   # per-app audio capture via PipeWire
       obs-vkcapture                # low-overhead Vulkan/OpenGL game capture
       obs-vaapi                    # AMD hardware H.264/HEVC/AV1 encoding

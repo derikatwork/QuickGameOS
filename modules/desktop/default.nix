@@ -1,57 +1,25 @@
 { config, lib, pkgs, ... }:
 
-let
-  cfg = config.quickgameos;
-  wantLabwc = cfg.desktop == "labwc" || cfg.desktop == "both";
-  wantPlasma = cfg.desktop == "plasma" || cfg.desktop == "both";
-in
 {
-  imports = [
-    ./labwc.nix
-    ./plasma.nix
+  # -----------------------------------------------------------------------
+  # COSMIC - System76's Wayland-native desktop. It brings its own session,
+  # greeter (cosmic-greeter), settings, and xdg-desktop-portal-cosmic (which
+  # is what gives OBS/Sunshine/browsers screen capture on this compositor).
+  # COSMIC owns its own theming, so there are no desktop dotfiles to ship.
+  # -----------------------------------------------------------------------
+
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
+
+  # The COSMIC module installs the core desktop/apps; add a browser.
+  environment.systemPackages = with pkgs; [
+    firefox
   ];
 
-  config = {
-    # -------------------------------------------------------------------
-    # Login screen. SDDM (on Wayland) is a clean greeter that lists every
-    # installed session, so with desktop = "both" you get labwc, Plasma and
-    # the Steam/gamescope "big picture" session all pickable at login.
-    # -------------------------------------------------------------------
-    services.displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
-
-    # Preselect a sensible session at the greeter. We use the always-valid
-    # desktop session names here (labwc / plasma); the Steam "big picture"
-    # gamescope session is still one click away in the session menu.
-    #
-    # Plain assignment (priority 100) intentionally overrides Plasma 6's own
-    # mkDefault "plasma", so with desktop = "both" labwc is the default and
-    # Plasma stays one click away. A host can still change it with mkForce.
-    services.displayManager.defaultSession =
-      if wantLabwc then "labwc" else "plasma";
-
-    # -------------------------------------------------------------------
-    # xdg desktop portals - required for screen sharing/capture (OBS,
-    # Sunshine, browsers) and file pickers on Wayland.
-    # -------------------------------------------------------------------
-    xdg.portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
-      # Plasma ships its own KDE portal; labwc (wlroots) needs the wlr one.
-      extraPortals = lib.optionals wantLabwc [
-        pkgs.xdg-desktop-portal-wlr
-        pkgs.xdg-desktop-portal-gtk
-      ];
-    };
-
-    # Dark theme everywhere that honours the freedesktop appearance hint.
-    environment.sessionVariables = {
-      # Wayland-native toolkits + Ozone for Electron/Chromium apps
-      # (Heroic, Bottles UI, Discord, VS Code, ...).
-      NIXOS_OZONE_WL = "1";
-      MOZ_ENABLE_WAYLAND = "1";
-    };
+  # Wayland-native toolkits + Ozone for Electron/Chromium apps (Heroic,
+  # Bottles UI, Discord/Vesktop, VS Code, ...).
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1";
   };
 }

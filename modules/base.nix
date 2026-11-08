@@ -68,7 +68,7 @@
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       liberation_ttf
       jetbrains-mono
       nerd-fonts.jetbrains-mono
@@ -119,5 +119,5 @@
   security.polkit.enable = true;
   security.rtkit.enable = true;
 
-  system.stateVersion = lib.mkDefault "25.05";
+  system.stateVersion = lib.mkDefault "25.11";
 }

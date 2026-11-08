@@ -10,9 +10,10 @@
   # Load amdgpu early for a clean, flicker-free boot.
   boot.initrd.kernelModules = [ "amdgpu" ];
 
-  # A fresh, low-latency kernel. Zen is a great gaming default; swap for
-  # pkgs.linuxPackages_latest if you prefer mainline.
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_zen;
+  # Track the latest stable mainline kernel, matching how Fedora ships the
+  # newest stable kernel (and thus the freshest amdgpu). Swap for
+  # pkgs.linuxPackages_zen if you'd prefer the Zen desktop/gaming kernel.
+  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 
   # Expose the full power/fan/clock control surface so CoreCtrl can tune the
   # GPU (undervolt, fan curves, power profiles). This sets the
