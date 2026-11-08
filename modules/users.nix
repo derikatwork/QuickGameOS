@@ -21,7 +21,10 @@ in
       "audio"
       "input"
     ];
-    # Default password is "gamer" - CHANGE IT on first login with `passwd`.
-    initialPassword = lib.mkDefault "gamer";
+
+    # If the installer captured a password, use its hash file; otherwise fall
+    # back to the default "gamer" password - CHANGE IT on first login (`passwd`).
+    hashedPasswordFile = lib.mkIf (cfg.hashedPasswordFile != null) cfg.hashedPasswordFile;
+    initialPassword = lib.mkIf (cfg.hashedPasswordFile == null) (lib.mkDefault "gamer");
   };
 }

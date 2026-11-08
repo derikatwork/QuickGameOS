@@ -21,6 +21,17 @@ with lib;
       description = "Display / GECOS name for the primary user.";
     };
 
+    hashedPasswordFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = ''
+        Path to a file containing the primary user's hashed password (as
+        produced by `mkpasswd -m sha-512` / `openssl passwd -6`). When set,
+        it's used as the account's hashedPasswordFile and the default
+        "gamer" password is not applied. The installer writes this for you.
+      '';
+    };
+
     desktop = mkOption {
       type = types.enum [ "cosmic" ];
       default = "cosmic";
@@ -42,6 +53,12 @@ with lib;
       type = types.bool;
       default = true;
       description = "Install and configure the streaming stack (OBS Studio + plugins, virtual camera, Sunshine host).";
+    };
+
+    office.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Install the office / productivity category (LibreOffice, Thunderbird, PDF viewer, KeePassXC).";
     };
 
     extras = {
