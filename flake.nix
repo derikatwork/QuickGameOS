@@ -34,6 +34,7 @@
           ./modules/gaming.nix
           ./modules/flatpak.nix
           ./modules/streaming.nix
+          ./modules/office.nix
           ./modules/extras.nix
           ./modules/desktop
           ./modules/auto-update.nix

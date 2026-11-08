@@ -35,6 +35,7 @@ kernel**, the way Fedora ships the newest stable kernel and amdgpu.
 | **Streaming** | OBS (COSMIC/PipeWire screen capture via the portal + AMD VAAPI encode + virtual camera); Sunshine host for Moonlight remote play. |
 | **Audio** | PipeWire (low-latency, per-app routing), qpwgraph/Helvum, EasyEffects. |
 | **Extras** | Emulation (RetroArch + emulators), Vesktop, OpenRGB/Piper/Solaar, Moonlight client, mpv + Spotify. All toggleable. |
+| **Office** | Optional productivity category: LibreOffice, Thunderbird, PDF viewer, KeePassXC (off by default). |
 | **Maintenance** | `nixos-unstable` channel, weekly automatic updates + weekly garbage collection. |
 
 ---
@@ -51,17 +52,35 @@ Already on NixOS and just want it done? From a clone of this repo:
 nix-shell -p git
 git clone https://github.com/derikatwork/quickgameos
 cd quickgameos
-./install.sh                         # keep defaults
-# or personalize:
-./install.sh --username alice --hostname rig --timezone America/Los_Angeles
+./install.sh                         # interactive: asks username, password & categories
 ```
 
-`install.sh` regenerates this machine's `hardware-configuration.nix`, applies any
-`--username` / `--hostname` / `--timezone` you pass, and runs
-`nixos-rebuild switch --flake .#quickgameos`. Useful flags: `--dry-run` (preview
-without changing anything), `--keep-hardware` / `--regen-hardware`, `-y` (no
-prompt), `--help`. It does **not** partition disks or install a bootloader — you
-already have NixOS. Prefer doing it by hand? Follow the manual steps below.
+Run with no flags (and a terminal attached) and it **asks you** for:
+
+- **Username** and **password** (hidden; hashed with `mkpasswd`/`openssl` and
+  written to a root-only `/etc/quickgameos/password.hash` — never committed),
+- **Hostname** and **timezone**,
+- which **feature categories** to turn on: Gaming, Streaming, Office,
+  Emulation, Communication, Peripherals, Media, and weekly auto-updates.
+
+Prefer presets or unattended runs? Start from a **profile** and fine-tune:
+
+```bash
+./install.sh --profile office -y                 # office preset, no prompts
+./install.sh --profile gaming --no-emulation     # gaming, but skip emulators
+./install.sh --username alice --timezone America/Los_Angeles --office
+```
+
+Profiles: `gaming` (default) · `office` · `everything` · `minimal`. Per-category
+flags (`--gaming`/`--no-gaming`, `--office`/`--no-office`, …) override the
+profile. Other useful flags: `--password`, `--hostname`, `--dry-run` (preview),
+`--keep-hardware`/`--regen-hardware`, `-y/--yes`, `--help`.
+
+The installer writes your choices to `hosts/quickgameos/settings.nix`,
+regenerates this machine's `hardware-configuration.nix`, then runs
+`nixos-rebuild switch --flake .#quickgameos`. It does **not** partition disks or
+install a bootloader — you already have NixOS. Prefer doing it by hand? Follow
+the manual steps below.
 
 ### Manual steps
 
@@ -93,9 +112,10 @@ sudo nixos-generate-config --show-hardware-config \
 
 #### 4. Make it yours (optional)
 
-Edit `hosts/quickgameos/default.nix`: set your `quickgameos.username`,
-timezone, and flip any `quickgameos.*` toggles you don't want (see
-**Configuration knobs** below).
+Edit `hosts/quickgameos/settings.nix` — set your `quickgameos.username`,
+hostname, timezone, and flip any feature category you don't want (see
+**Configuration knobs** below). This is the same file `install.sh` generates,
+so hand-editing and the script are interchangeable.
 
 #### 5. Switch to QuickGameOS
 
@@ -131,7 +151,7 @@ updated weekly.
 ## Configuration knobs
 
 Everything user-facing lives under `quickgameos.*` (see `modules/options.nix`),
-set in `hosts/quickgameos/default.nix`:
+set in `hosts/quickgameos/settings.nix` (the file `install.sh` regenerates):
 
 ```nix
 quickgameos = {
@@ -140,6 +160,7 @@ quickgameos = {
 
   gaming.enable    = true;
   streaming.enable = true;
+  office.enable    = false;  # LibreOffice, Thunderbird, PDF, KeePassXC
 
   # Extras (all default true; flip any off):
   extras.enable        = true;
@@ -171,12 +192,14 @@ modules/
   gaming.nix                   # Steam/Lutris/Heroic/Bottles + tooling + MangoHud
   flatpak.nix                  # Flatpak + Flathub remote
   streaming.nix                # OBS + virtual camera + Sunshine
+  office.nix                   # office / productivity category (opt-in)
   extras.nix                   # emulation, comms, peripherals, media (toggleable)
   auto-update.nix              # weekly system.autoUpgrade
   users.nix                    # the primary user
   desktop/default.nix          # COSMIC desktop + greeter
 hosts/quickgameos/
-  default.nix                  # the installed machine (bootloader, hostname)
+  default.nix                  # bootloader, imports (host wiring)
+  settings.nix                 # host identity + feature toggles (install.sh writes this)
   hardware-configuration.nix   # TEMPLATE — replace with YOUR hardware
 .github/workflows/check.yml    # CI: evaluate the config + nixpkgs-fmt (advisory)
 ```
