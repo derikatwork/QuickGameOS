@@ -22,16 +22,13 @@ with lib;
     };
 
     desktop = mkOption {
-      type = types.enum [ "labwc" "plasma" "both" ];
-      default = "both";
+      type = types.enum [ "cosmic" ];
+      default = "cosmic";
       description = ''
-        Which Wayland desktop(s) to install.
-
-        - "labwc"  : the lightweight, BunsenLabs/Openbox-style compositor.
-        - "plasma" : KDE Plasma 6, the heavier full-featured desktop with
-                     the best VRR/HDR/per-game story.
-        - "both"   : install both and pick one at the login screen
-                     (recommended - this is the default).
+        The desktop environment. QuickGameOS ships System76's COSMIC - a
+        fast, modern, Wayland-native desktop. (Only "cosmic" for now; the
+        option is kept so hosts/ISO can be explicit and future desktops can
+        slot in.)
       '';
     };
 

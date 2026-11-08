@@ -5,11 +5,11 @@
   # A live + installer QuickGameOS image, kept deliberately LEAN so it can
   # be built on a normal CI runner and downloaded.
   #
-  # It boots a themed labwc live session with the NixOS installer tooling
-  # and the full QuickGameOS flake embedded on disk. You install the FULL
-  # experience (Steam, Plasma, emulators, streaming, ...) to your drive from
-  # that embedded flake - so the heavy stack lives on the installed system,
-  # not on the image you download.
+  # It boots a COSMIC live session with the NixOS installer tooling and the
+  # full QuickGameOS flake embedded on disk. You install the FULL experience
+  # (Steam, emulators, streaming, ...) to your drive from that embedded
+  # flake - so the heavy stack lives on the installed system, not on the
+  # image you download.
   #
   #   Build:  nix build .#iso
   #   Image:  ./result/iso/quickgameos-*.iso
@@ -18,19 +18,17 @@
     (modulesPath + "/installer/cd-dvd/installation-cd-base.nix")
   ];
 
-  # Lean live image: just the lightweight desktop + installer. The gaming,
-  # streaming and extras stacks are NOT baked into the ISO (they'd make it
-  # huge); they install onto the target system from the embedded flake.
+  # Lean live image: the COSMIC desktop + installer. The gaming, streaming
+  # and extras stacks are NOT baked into the ISO (they'd make it huge); they
+  # install onto the target system from the embedded flake.
   quickgameos = {
-    desktop = "labwc";
+    desktop = "cosmic";
     gaming.enable = false;
     streaming.enable = false;
     extras.enable = false;
     autoUpdate.enable = false;
   };
 
-  # The live user gets the QuickGameOS theme so the image still looks the part.
-  home-manager.users.nixos = import ../home/gamer.nix;
   users.users.nixos.extraGroups = [ "video" "audio" "input" "networkmanager" ];
 
   # Auto-login into the live desktop (the live account has no password, which
@@ -74,7 +72,7 @@
     ============================================================
 
     The full QuickGameOS flake is already on this image at
-    /etc/quickgameos (Steam, Plasma, emulators, streaming, etc. all
+    /etc/quickgameos (COSMIC, Steam, emulators, streaming, etc. all
     install to your disk from it).
 
     1. Partition & format your disk (use `sudo gparted`, or the NixOS

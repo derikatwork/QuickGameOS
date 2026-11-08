@@ -80,7 +80,28 @@ in
       superTuxKart
     ];
 
-    # MangoHud config lives in home-manager (home/gamer.nix) so it's tuned
-    # per-user; the package above makes the overlay available system-wide.
+    # A sensible system-wide MangoHud default (XDG base dir). Toggle the
+    # overlay in-game with Shift_R+F12; tune it per-user with `goverlay`.
+    environment.etc."xdg/MangoHud/MangoHud.conf".text = ''
+      legacy_layout=false
+      gpu_stats
+      gpu_temp
+      gpu_power
+      cpu_stats
+      cpu_temp
+      ram
+      vram
+      fps
+      frametime=1
+      frame_timing=1
+      gpu_name
+      vulkan_driver
+      resolution
+      position=top-left
+      font_size=20
+      background_alpha=0.4
+      round_corners=8
+      toggle_hud=Shift_R+F12
+    '';
   };
 }

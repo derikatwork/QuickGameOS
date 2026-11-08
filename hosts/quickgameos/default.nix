@@ -21,7 +21,7 @@
   # QuickGameOS defaults - override per-host as you like.
   quickgameos = {
     username = "gamer";
-    desktop = "both";        # labwc + Plasma 6, choose at login
+    desktop = "cosmic";      # System76 COSMIC (Wayland)
     gaming.enable = true;
     streaming.enable = true;
     autoUpdate.enable = true;
@@ -33,7 +33,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 3;
 
-  # A quiet, graphical boot with a dark splash, BunsenLabs-style.
+  # A quiet, graphical boot with a dark splash.
   boot.plymouth.enable = true;
   boot.kernelParams = [ "quiet" "splash" ];
   boot.consoleLogLevel = 0;
@@ -43,5 +43,5 @@
   # gaming box; drop this if you'd rather be prompted.
   security.sudo.wheelNeedsPassword = lib.mkDefault false;
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }

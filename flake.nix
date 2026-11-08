@@ -1,21 +1,17 @@
 {
-  description = "QuickGameOS - a Nix-powered, BunsenLabs-inspired, gaming-first Wayland OS (Steam, Lutris, Heroic, Bottles, OBS + Sunshine, weekly auto-updates)";
+  description = "QuickGameOS - a Nix-powered, gaming-first OS with the COSMIC desktop, tracking Fedora-level freshness (latest stable kernel + current software), Steam/Lutris/Heroic/Bottles + Flatpak, OBS + Sunshine, weekly auto-updates";
 
   inputs = {
-    # Track the current NixOS stable release for steadier weekly auto-updates.
-    # (For the very newest gaming packages instead, switch this to
-    # "github:NixOS/nixpkgs/nixos-unstable" and home-manager to its default
-    # branch below.)
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Track nixos-unstable: it's the NixOS channel closest to Fedora's
+    # bleeding-edge freshness, so package and kernel versions line up roughly
+    # with a current Fedora release (Fedora 45-era). COSMIC is also best
+    # supported here. Pin to a stable release (e.g. nixos-25.11) if you'd
+    # rather trade freshness for stability.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
-    { self, nixpkgs, home-manager, ... }@inputs:
+    { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -26,26 +22,18 @@
         ./modules/amd.nix
         ./modules/audio.nix
         ./modules/gaming.nix
+        ./modules/flatpak.nix
         ./modules/streaming.nix
         ./modules/extras.nix
         ./modules/desktop
-        ./modules/theme.nix
-
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "hm-backup";
-          home-manager.extraSpecialArgs = { inherit inputs; };
-        }
       ];
     in
     {
       # ---------------------------------------------------------------------
-      # The installed system. Build/apply with:
+      # The installed system:
       #   sudo nixos-rebuild switch --flake .#quickgameos
-      # Remember to replace hosts/quickgameos/hardware-configuration.nix with
-      # the output of `nixos-generate-config` for YOUR machine first.
+      # Replace hosts/quickgameos/hardware-configuration.nix with the output
+      # of `nixos-generate-config` for your machine first.
       # ---------------------------------------------------------------------
       nixosConfigurations.quickgameos = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -56,8 +44,7 @@
       };
 
       # ---------------------------------------------------------------------
-      # A live, bootable ISO you can try before installing. Build with:
-      #   nix build .#iso
+      # A live, bootable COSMIC installer image:  nix build .#iso
       # The image lands in ./result/iso/*.iso
       # ---------------------------------------------------------------------
       nixosConfigurations.iso = nixpkgs.lib.nixosSystem {
@@ -65,7 +52,6 @@
         modules = commonModules ++ [ ./iso ];
       };
 
-      # Convenience so `nix build .#iso` (and `.#default`) works.
       packages.${system} =
         let
           isoImage = self.nixosConfigurations.iso.config.system.build.isoImage;
@@ -75,7 +61,6 @@
           default = isoImage;
         };
 
-      # `nix fmt`
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
     };
 }
