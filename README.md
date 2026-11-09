@@ -255,6 +255,10 @@ hosts/quickgameos/
 - **GPU tuning:** launch **CoreCtrl** for fan curves / undervolting.
 - **NVIDIA/Intel:** this build targets AMD Radeon. Swap `modules/amd.nix` for the
   appropriate driver module if your hardware differs.
+- **Security:** sudo prompts for a password by default and there's no SSH out of
+  the box. See [`SECURITY.md`](SECURITY.md) for the threat model and the
+  deliberate trade-offs (default password, Sunshine/Steam open ports, auto-update
+  trust, binary caches) and how to harden.
 
 ---
 
