@@ -32,6 +32,7 @@ HOSTNAME_NEW="quickgameos"
 TIMEZONE="America/New_York"
 PASSWORD=""                 # empty => keep the default "gamer" password
 GAMING="true"; STREAMING="true"; OFFICE="false"
+DEV="false"; CREATIVE="false"; MODELING="false"
 EMULATION="true"; COMMUNICATION="true"; PERIPHERALS="true"; MEDIA="true"
 AUTOUPDATE="true"
 
@@ -48,12 +49,15 @@ run()  { if [ "$DRY_RUN" -eq 1 ]; then printf '  [dry-run] %s\n' "$*"; else eval
 tf()   { case "$1" in 1|y|Y|yes|YES|true) echo true ;; *) echo false ;; esac; }
 
 apply_profile() {
+  # Base categories for every profile start off; set the ones this profile wants.
+  DEV=false; CREATIVE=false; MODELING=false
   case "$1" in
     gaming)     GAMING=true;  STREAMING=true;  OFFICE=false; EMULATION=true;  COMMUNICATION=true;  PERIPHERALS=true;  MEDIA=true ;;
     office)     GAMING=false; STREAMING=false; OFFICE=true;  EMULATION=false; COMMUNICATION=true;  PERIPHERALS=false; MEDIA=true ;;
-    everything) GAMING=true;  STREAMING=true;  OFFICE=true;  EMULATION=true;  COMMUNICATION=true;  PERIPHERALS=true;  MEDIA=true ;;
+    creator)    GAMING=false; STREAMING=true;  OFFICE=false; EMULATION=false; COMMUNICATION=true;  PERIPHERALS=true;  MEDIA=true; CREATIVE=true; MODELING=true ;;
+    everything) GAMING=true;  STREAMING=true;  OFFICE=true;  EMULATION=true;  COMMUNICATION=true;  PERIPHERALS=true;  MEDIA=true; DEV=true; CREATIVE=true; MODELING=true ;;
     minimal)    GAMING=false; STREAMING=false; OFFICE=false; EMULATION=false; COMMUNICATION=false; PERIPHERALS=false; MEDIA=false ;;
-    *) die "unknown --profile '$1' (gaming|office|everything|minimal)" ;;
+    *) die "unknown --profile '$1' (gaming|office|creator|everything|minimal)" ;;
   esac
 }
 
@@ -71,10 +75,13 @@ Identity:
   --timezone TZ           e.g. America/Los_Angeles
 
 Feature categories (start from a profile, then fine-tune):
-  --profile NAME          gaming (default) | office | everything | minimal
+  --profile NAME          gaming (default) | office | creator | everything | minimal
   --gaming / --no-gaming
   --streaming / --no-streaming
   --office / --no-office
+  --dev / --no-dev
+  --creative / --no-creative
+  --modeling / --no-modeling
   --emulation / --no-emulation
   --communication / --no-communication
   --peripherals / --no-peripherals
@@ -105,7 +112,10 @@ while [ $# -gt 0 ]; do
     --gaming)         GAMING=true; shift ;;      --no-gaming)         GAMING=false; shift ;;
     --streaming)      STREAMING=true; shift ;;   --no-streaming)      STREAMING=false; shift ;;
     --office)         OFFICE=true; shift ;;      --no-office)         OFFICE=false; shift ;;
-    --emulation)      EMULATION=true; shift ;;   --no-emulation)      EMULATION=false; shift ;;
+    --dev)            DEV=true; shift ;;          --no-dev)            DEV=false; shift ;;
+    --creative)       CREATIVE=true; shift ;;     --no-creative)       CREATIVE=false; shift ;;
+    --modeling)       MODELING=true; shift ;;     --no-modeling)       MODELING=false; shift ;;
+    --emulation)      EMULATION=true; shift ;;    --no-emulation)      EMULATION=false; shift ;;
     --communication)  COMMUNICATION=true; shift ;; --no-communication) COMMUNICATION=false; shift ;;
     --peripherals)    PERIPHERALS=true; shift ;; --no-peripherals)    PERIPHERALS=false; shift ;;
     --media)          MEDIA=true; shift ;;       --no-media)          MEDIA=false; shift ;;
@@ -167,6 +177,9 @@ if [ "$interactive" -eq 1 ]; then
   GAMING="$(ask_yn '  Gaming (Steam, Lutris, Heroic, Bottles, gamescope)' "$GAMING")"
   STREAMING="$(ask_yn '  Streaming (OBS + Sunshine)' "$STREAMING")"
   OFFICE="$(ask_yn '  Office (LibreOffice, Thunderbird, PDF, KeePassXC)' "$OFFICE")"
+  DEV="$(ask_yn '  Dev (VS Code, toolchains, Podman, git tooling)' "$DEV")"
+  CREATIVE="$(ask_yn '  Creative (GIMP, Krita, Inkscape, Audacity, Kdenlive)' "$CREATIVE")"
+  MODELING="$(ask_yn '  3D modelling (Blender, FreeCAD, OpenSCAD, PrusaSlicer)' "$MODELING")"
   EMULATION="$(ask_yn '  Emulation (RetroArch + emulators)' "$EMULATION")"
   COMMUNICATION="$(ask_yn '  Communication (Vesktop/Discord)' "$COMMUNICATION")"
   PERIPHERALS="$(ask_yn '  Peripherals (OpenRGB, Piper, Solaar, Moonlight)' "$PERIPHERALS")"
@@ -228,6 +241,9 @@ ${pw_line}
     gaming.enable = $GAMING;
     streaming.enable = $STREAMING;
     office.enable = $OFFICE;
+    dev.enable = $DEV;
+    creative.enable = $CREATIVE;
+    modeling.enable = $MODELING;
 
     extras.enable = $EXTRAS_ENABLE;
     extras.emulation = $EMULATION;
@@ -270,6 +286,7 @@ cat <<EOF
   hostname    : $HOSTNAME_NEW
   timezone    : $TIMEZONE
   gaming      : $GAMING        streaming : $STREAMING        office : $OFFICE
+  dev         : $DEV        creative : $CREATIVE        modeling : $MODELING
   emulation   : $EMULATION        communication : $COMMUNICATION
   peripherals : $PERIPHERALS        media : $MEDIA        auto-update : $AUTOUPDATE
   build       : .#$FLAKE_HOST

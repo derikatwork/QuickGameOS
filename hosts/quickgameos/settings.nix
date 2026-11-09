@@ -15,6 +15,9 @@
     gaming.enable = true;      # Steam, Lutris, Heroic, Bottles, gamescope, ...
     streaming.enable = true;   # OBS + Sunshine
     office.enable = false;     # LibreOffice, Thunderbird, PDF, KeePassXC
+    dev.enable = false;        # VS Code, toolchains, Podman, git tooling
+    creative.enable = false;   # GIMP, Krita, Inkscape, Audacity, Kdenlive, ...
+    modeling.enable = false;   # Blender, FreeCAD, OpenSCAD, PrusaSlicer, ...
 
     extras.enable = true;
     extras.emulation = true;        # RetroArch + emulators
