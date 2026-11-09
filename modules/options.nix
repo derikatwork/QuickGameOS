@@ -61,6 +61,24 @@ with lib;
       description = "Install the office / productivity category (LibreOffice, Thunderbird, PDF viewer, KeePassXC).";
     };
 
+    dev.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Install the developer category (VS Code, Neovim, toolchains for C/C++/Python/Node/Go/Rust, rootless Podman, git tooling).";
+    };
+
+    creative.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Install the creative / content-creation category (GIMP, Krita, Inkscape, darktable, Audacity, Kdenlive, HandBrake).";
+    };
+
+    modeling.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Install the 3D modelling category (Blender, FreeCAD, OpenSCAD, MeshLab, PrusaSlicer).";
+    };
+
     extras = {
       enable = mkOption {
         type = types.bool;

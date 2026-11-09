@@ -36,6 +36,9 @@ kernel**, the way Fedora ships the newest stable kernel and amdgpu.
 | **Audio** | PipeWire (low-latency, per-app routing), qpwgraph/Helvum, EasyEffects. |
 | **Extras** | Emulation (RetroArch + emulators), Vesktop, OpenRGB/Piper/Solaar, Moonlight client, mpv + Spotify. All toggleable. |
 | **Office** | Optional productivity category: LibreOffice, Thunderbird, PDF viewer, KeePassXC (off by default). |
+| **Dev** | Optional developer category: VS Code, Neovim, C/C++/Python/Node/Go/Rust toolchains, rootless Podman, `gh`/`lazygit` (off by default). |
+| **Creative** | Optional content-creation category: GIMP, Krita, Inkscape, darktable, Audacity, Kdenlive, HandBrake (off by default). |
+| **3D modelling** | Optional category: Blender, FreeCAD, OpenSCAD, MeshLab, PrusaSlicer (off by default). |
 | **Maintenance** | `nixos-unstable` channel, weekly automatic updates + weekly garbage collection. |
 
 ---
@@ -60,20 +63,23 @@ Run with no flags (and a terminal attached) and it **asks you** for:
 - **Username** and **password** (hidden; hashed with `mkpasswd`/`openssl` and
   written to a root-only `/etc/quickgameos/password.hash` — never committed),
 - **Hostname** and **timezone**,
-- which **feature categories** to turn on: Gaming, Streaming, Office,
-  Emulation, Communication, Peripherals, Media, and weekly auto-updates.
+- which **feature categories** to turn on: Gaming, Streaming, Office, Dev,
+  Creative, 3D modelling, Emulation, Communication, Peripherals, Media, and
+  weekly auto-updates.
 
 Prefer presets or unattended runs? Start from a **profile** and fine-tune:
 
 ```bash
 ./install.sh --profile office -y                 # office preset, no prompts
+./install.sh --profile creator --dev             # content-creation + dev
 ./install.sh --profile gaming --no-emulation     # gaming, but skip emulators
 ./install.sh --username alice --timezone America/Los_Angeles --office
 ```
 
-Profiles: `gaming` (default) · `office` · `everything` · `minimal`. Per-category
-flags (`--gaming`/`--no-gaming`, `--office`/`--no-office`, …) override the
-profile. Other useful flags: `--password`, `--hostname`, `--dry-run` (preview),
+Profiles: `gaming` (default) · `office` · `creator` · `everything` · `minimal`.
+Per-category flags (`--gaming`/`--no-gaming`, `--dev`/`--no-dev`,
+`--creative`, `--modeling`, …) override the profile. Other useful flags:
+`--password`, `--hostname`, `--dry-run` (preview),
 `--keep-hardware`/`--regen-hardware`, `-y/--yes`, `--help`.
 
 The installer writes your choices to `hosts/quickgameos/settings.nix`,
@@ -161,6 +167,9 @@ quickgameos = {
   gaming.enable    = true;
   streaming.enable = true;
   office.enable    = false;  # LibreOffice, Thunderbird, PDF, KeePassXC
+  dev.enable       = false;  # VS Code, toolchains, Podman, git tooling
+  creative.enable  = false;  # GIMP, Krita, Inkscape, Audacity, Kdenlive
+  modeling.enable  = false;  # Blender, FreeCAD, OpenSCAD, PrusaSlicer
 
   # Extras (all default true; flip any off):
   extras.enable        = true;
@@ -193,6 +202,9 @@ modules/
   flatpak.nix                  # Flatpak + Flathub remote
   streaming.nix                # OBS + virtual camera + Sunshine
   office.nix                   # office / productivity category (opt-in)
+  dev.nix                      # developer category (opt-in)
+  creative.nix                 # creative / content-creation category (opt-in)
+  modeling.nix                 # 3D modelling category (opt-in)
   extras.nix                   # emulation, comms, peripherals, media (toggleable)
   auto-update.nix              # weekly system.autoUpgrade
   users.nix                    # the primary user

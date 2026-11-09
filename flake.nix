@@ -35,6 +35,9 @@
           ./modules/flatpak.nix
           ./modules/streaming.nix
           ./modules/office.nix
+          ./modules/dev.nix
+          ./modules/creative.nix
+          ./modules/modeling.nix
           ./modules/extras.nix
           ./modules/desktop
           ./modules/auto-update.nix
