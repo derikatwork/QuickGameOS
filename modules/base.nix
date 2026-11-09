@@ -82,6 +82,8 @@
   environment.shellAliases = {
     qgos-update = "sudo nixos-rebuild switch --flake ${config.quickgameos.autoUpdate.flake}";
     qgos-upgrade = "sudo nixos-rebuild switch --flake ${config.quickgameos.autoUpdate.flake} --upgrade";
+    qgos-rollback = "sudo nixos-rebuild switch --rollback";
+    qgos-generations = "sudo nixos-rebuild list-generations";
   };
 
   # Baseline CLI tools everyone ends up wanting.
