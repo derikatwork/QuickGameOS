@@ -154,6 +154,26 @@ updated weekly.
 
 ---
 
+## Uninstall / rollback
+
+NixOS keeps every build as a *generation* you can switch between, so backing out
+is safe and reversible. Use `./uninstall.sh` (interactive menu, or flags):
+
+```bash
+./uninstall.sh --rollback        # undo the last switch (previous generation)
+./uninstall.sh --list            # list system generations
+./uninstall.sh --generation 42   # activate a specific generation (e.g. pre-QuickGameOS)
+./uninstall.sh --minimal         # disable every feature category, keep the NixOS + COSMIC base
+```
+
+Quick aliases are also installed: **`qgos-rollback`** (previous generation) and
+**`qgos-generations`** (list them). To go all the way back to a plain system,
+roll back to the generation from *before* you first ran `install.sh`. None of
+this deletes data — switching generations is reversible, and you can re-apply
+QuickGameOS anytime with `./install.sh`.
+
+---
+
 ## Configuration knobs
 
 Everything user-facing lives under `quickgameos.*` (see `modules/options.nix`),
@@ -193,6 +213,7 @@ quickgameos = {
 ```
 flake.nix                      # entry point: the `quickgameos` system
 install.sh                     # minimal NixOS -> full QuickGameOS installer
+uninstall.sh                   # rollback / strip-to-minimal helper
 modules/
   options.nix                  # the quickgameos.* configuration knobs
   base.nix                     # Nix, GC, fonts, networking, CLI tools, codecs
@@ -234,6 +255,10 @@ hosts/quickgameos/
 - **GPU tuning:** launch **CoreCtrl** for fan curves / undervolting.
 - **NVIDIA/Intel:** this build targets AMD Radeon. Swap `modules/amd.nix` for the
   appropriate driver module if your hardware differs.
+- **Security:** sudo prompts for a password by default and there's no SSH out of
+  the box. See [`SECURITY.md`](SECURITY.md) for the threat model and the
+  deliberate trade-offs (default password, Sunshine/Steam open ports, auto-update
+  trust, binary caches) and how to harden.
 
 ---
 

@@ -102,13 +102,21 @@ EOF
 }
 
 # --- parse args -------------------------------------------------------------
+# Apply --profile first (in a pre-scan) so individual category flags always
+# override it, regardless of argument order.
+for ((i = 1; i <= $#; i++)); do
+  if [ "${!i}" = "--profile" ]; then
+    j=$((i + 1)); apply_profile "${!j:-}"
+  fi
+done
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --username)       USERNAME="${2:-}"; shift 2 ;;
     --password)       PASSWORD="${2:-}"; shift 2 ;;
     --hostname)       HOSTNAME_NEW="${2:-}"; shift 2 ;;
     --timezone)       TIMEZONE="${2:-}"; shift 2 ;;
-    --profile)        apply_profile "${2:-}"; shift 2 ;;
+    --profile)        shift 2 ;;   # already applied in the pre-scan above
     --gaming)         GAMING=true; shift ;;      --no-gaming)         GAMING=false; shift ;;
     --streaming)      STREAMING=true; shift ;;   --no-streaming)      STREAMING=false; shift ;;
     --office)         OFFICE=true; shift ;;      --no-office)         OFFICE=false; shift ;;
@@ -188,8 +196,16 @@ if [ "$interactive" -eq 1 ]; then
 fi
 
 # --- validate ---------------------------------------------------------------
+# These values are written verbatim into settings.nix and (for flake-host) into
+# the rebuild command, so reject anything that could break or inject.
 printf '%s' "$USERNAME" | grep -qE '^[a-z_][a-z0-9_-]*$' \
   || die "invalid username '$USERNAME' (lowercase letters, digits, _ or -)."
+printf '%s' "$HOSTNAME_NEW" | grep -qE '^[a-zA-Z0-9][a-zA-Z0-9-]{0,62}$' \
+  || die "invalid hostname '$HOSTNAME_NEW' (letters, digits, hyphen; max 63)."
+printf '%s' "$TIMEZONE" | grep -qE '^[A-Za-z0-9][A-Za-z0-9_+./-]{0,63}$' \
+  || die "invalid timezone '$TIMEZONE' (e.g. America/Los_Angeles)."
+printf '%s' "$FLAKE_HOST" | grep -qE '^[a-zA-Z0-9._-]+$' \
+  || die "invalid --flake-host '$FLAKE_HOST'."
 
 # extras.enable is on if any extras category is on
 EXTRAS_ENABLE=false
@@ -220,6 +236,11 @@ if [ -n "$PASSWORD" ]; then
     printf '%s\n' "$HASH" | $SUDO tee "$PW_FILE" >/dev/null
     $SUDO chmod 600 "$PW_FILE"
   fi
+  HASHED_PW_FILE="$PW_FILE"
+elif [ -e "$PW_FILE" ]; then
+  # No new password given, but a hash from a previous run exists - keep using
+  # it so a re-run doesn't silently revert the account to the default password.
+  info "Keeping existing password hash at $PW_FILE"
   HASHED_PW_FILE="$PW_FILE"
 fi
 

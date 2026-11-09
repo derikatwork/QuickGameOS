@@ -31,9 +31,10 @@
   boot.kernelParams = [ "quiet" "splash" ];
   boot.consoleLogLevel = 0;
 
-  # Passwordless sudo for the wheel group is convenient on a personal
-  # gaming box; drop this if you'd rather be prompted.
-  security.sudo.wheelNeedsPassword = lib.mkDefault false;
+  # sudo requires a password (NixOS default). Passwordless sudo is convenient
+  # on a personal box but lets any compromised user-level process escalate to
+  # root silently - so it's opt-in. Uncomment to allow it:
+  #   security.sudo.wheelNeedsPassword = false;
 
   system.stateVersion = "25.11";
 }
